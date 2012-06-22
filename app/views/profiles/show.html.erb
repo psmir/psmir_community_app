@@ -1,0 +1,40 @@
+<div id="show_profile">
+  <h3><%= @profile.user.username %>'s profile</h3>
+  
+  <div id="personal_information">
+    <%= image_tag @profile.avatar.url(:original), :id => 'original_avatar' %>
+    <dl>
+      <dt>Name</dt>
+      <dd><%= @profile.name %></dd>
+      <dt>Gender</dt>
+      <dd><%= @profile.gender %></dd>
+      <dt>Birthday</dt>
+      <dd><%= @profile.birthday.strftime("%d %B %Y") %></dd>
+      <dt>About me</dt>
+      <dd><%= @profile.info %></dd>
+      <dt>Interests</dt>
+      <dd><%= @profile.interest_list %></dd>
+    </dl>
+    <div class="clear"></div>
+      <% if user_signed_in? && current_user == @profile.user %>
+        <%= link_to 'Edit', edit_profile_path(@profile), :id => 'edit_profile_link' %>
+      <% else %>
+        <%= link_to 'Read blog', user_articles_path(@profile.user), :id => 'read_blog_link' %>
+      <% end %>
+  </div>
+
+  <% if @favorite_bloggers %>
+    <div id="following">
+     <h4>Favorite bloggers</h4>
+      <% @favorite_bloggers.each do |blogger| %>
+        <div class="favorite_blogger">
+          <%= link_to image_tag(blogger.profile.avatar.url(:thumb)), profile_path(blogger.profile), :class => 'avatar' %>
+          <%= link_to "#{blogger.username} (#{blogger.profile.name})", profile_path(blogger.profile), :class => 'name' %>
+          <div class="clear"></div>
+        </div>
+      <% end %>
+      <%= paginate @favorite_bloggers %>
+    </div>
+  <% end %>
+  <div class="clear"></div>
+</div>

@@ -1,0 +1,45 @@
+// Place all the styles related to the profiles controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+@import "compass";
+
+#personal_information {
+  width: 500px;
+  float: left;
+}
+
+#personal_information dt {
+  width: 100px;
+  line-height: 32px;
+  float: left;
+  clear: left;
+  padding:0;
+}
+
+#personal_information dd { 
+  margin-left: 100px;
+  line-height: 32px;
+  padding: 0;
+
+}
+
+#edit_profile_link, #read_blog_link {
+  font-size: 1.2em;
+}
+
+
+
+#original_avatar {
+  @include border_radius(10px);  
+}
+
+
+#following {
+  float: right;
+  margin-right: 30px;
+}
+
+.favorite_blogger {
+  margin-top: 10px;
+}
+

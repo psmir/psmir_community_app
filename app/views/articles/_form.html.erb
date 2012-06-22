@@ -1,0 +1,18 @@
+<%= javascript_include_tag "/javascripts/ckeditor/ckeditor.js" %>
+<%= form_for @article do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </p> 
+  <p>
+    <%= f.label :content %>
+    <%= f.cktext_area :content,:label => false, :input_html => { :toolbar => 'Basic' } %>
+  </p> 
+  <p>
+    <%= label_tag :tags %>
+    <%= text_field_tag :tags, print_tags(@article) %>
+    <span>(separate tags with comma symbol)</span>
+  </p>
+  <%= f.submit %>
+<% end %>

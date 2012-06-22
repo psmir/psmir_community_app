@@ -1,0 +1,32 @@
+<%= link_to 'New message', new_message_path, :id => 'new_message_link' %>
+<% if @messages.count > 0 %>
+  <h3 class="centered">Incoming messages</h3>
+  <table id="messages_table">
+    <colgroup>
+      <col id="title_column" />
+      <col id="from_column" />
+      <col id="posted_column" />
+      <col id="edit_column" />
+      <col id="delete_column" />
+    </colgroup>
+    <tr>
+      <th>Title</th>
+      <th>From</th>
+      <th>Posted</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  <% @messages.each do |message| %>
+    <tr>
+      <td><%= message.title ||= '<no title>' %></td>
+      <td><%= link_to message.sender.username, profile_path(message.sender.profile) %></td>
+      <td><%= time_ago_in_words(message.created_at) %> ago</td>
+      <td><%= button_to 'View', message_path(message), :method => :get %></td>
+      <td><%= button_to 'Delete', message_path(message), :method => :delete %></td>
+    </tr>
+  <% end %>
+  </table>
+<%= paginate @messages %>
+<% else %>
+  <div id="no_messages_notice">Your incoming messages list is empty</div>
+<% end %>

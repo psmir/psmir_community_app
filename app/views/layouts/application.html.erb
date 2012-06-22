@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Community</title>
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <div id="wrapper" >
+    <div id="header">
+      <div id="logo">Community</div>
+      <div id="main_menu">
+        <%= link_to 'Home', root_path %>
+        <% if user_signed_in? %>
+            <%= link_to 'Profile', profile_path(current_user.profile) %>
+            <%= link_to 'My blog', user_articles_path(current_user) %>
+            <%= link_to 'Messages', messages_path %>
+            <%= link_to 'Admin', rails_admin_path if current_user.admin? %>
+            <%= link_to 'Sign out', destroy_user_session_path, :method => :delete %>
+        <% else %>
+            <%= link_to 'Sign in', new_user_session_path %>
+            <%= link_to 'Sign up', new_user_registration_path %>
+        <% end %>
+        <%= link_to 'About', about_path%>
+        <div class="clear">&nbsp;</div>
+      </div>
+    </div>
+
+    <div id="main_content">
+      <div id="spinner" class="spinner" style="display: none">
+        <%= image_tag '/images/spinner.gif', :id => 'image-spinner', :alt => 'Loading' %>
+      </div>
+      <% if notice || alert %>
+        <div id="message">
+          <%= content_tag(:div, notice, :class => 'notice') if notice %>
+          <%= content_tag(:div, alert, :class => 'alert') if alert %>
+        </div>
+      <% end %>
+      <%= yield %>
+    </div>
+
+    <div id="footer">
+       <span id="copyright">Community site</span>
+    </div>
+  </div>
+</body>
+</html>

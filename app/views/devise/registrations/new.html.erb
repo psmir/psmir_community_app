@@ -1,0 +1,42 @@
+<div id="sign_up">
+  <h2>Sign up</h2>
+  <% resource.build_profile(:gender => 'male') if resource.profile.nil? %>
+  <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+    <%= devise_error_messages! %>
+
+    <div><%= f.label :username %><br />
+    <%= f.text_field :username %></div>
+
+    <div><%= f.label :email %><br />
+    <%= f.email_field :email %></div>
+
+    <div><%= f.label :password %><br />
+    <%= f.password_field :password %></div>
+
+    <div><%= f.label :password_confirmation %><br />
+    <%= f.password_field :password_confirmation %></div>
+    <%= f.fields_for :profile do |pf| %>
+    <div><%= pf.label :name %><br />
+    <%= pf.text_field :name %></div>
+
+    <div><%= pf.radio_button :gender, 'male' %>
+      <%= pf.label :gender_male, 'male' %>
+      <%= pf.radio_button :gender, 'female' %>
+      <%= pf.label :gender_female, 'female' %>
+    </div>
+
+    <div>
+      <%= pf.label :birthday, 'Birthday' %><br />
+      <%= pf.date_select :birthday,
+                        :default => { :day => 1, :month => 1}, 
+                        :start_year => Time.now.year - 16, 
+                        :end_year => 1930, 
+                        :order => [:day, :month, :year] %>
+    </div>  
+    <% end %>
+    <br />
+    <div><%= f.submit "Sign up" %></div>
+  <% end %>
+
+  <%= render :partial => "devise/shared/links" %>
+</div>

@@ -1,0 +1,14 @@
+<div id="message_form">
+<%= form_for @message do |f| %>
+  <%= f.error_messages %>
+  <dl>
+    <dt><%= f.label :recipient_username, "To" %></dt>
+    <dd><%= f.text_field :recipient_username %></dd>
+    <dt><%= f.label :title %></dt>
+    <dd><%= f.text_field :title %></dd>
+    <dt><%= f.label :message %></dt>
+    <dd><%= f.text_area :message %></dd>
+  </dl>
+  <%= f.submit "Send" %>
+<% end %>
+</div>

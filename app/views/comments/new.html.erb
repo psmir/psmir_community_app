@@ -1,0 +1,12 @@
+<span class="breadcrumb"><%= link_to 'Article >> ', user_article_path(@article.user, @article) %>Add comment</span>
+<div id="add_comment">
+  <%= form_for [@article, @comment] do |f| %>
+    <%= hidden_field_tag :parent, params[:parent] if params[:parent] %>
+    <p>
+      <%= f.text_area :body %>
+    </p>
+    <p>
+      <%= f.submit %>
+    </p>
+  <% end %>
+</div>

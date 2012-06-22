@@ -1,0 +1,12 @@
+Simple community application
+
+Features:
+  Blogging
+  Profile with a list of favorite bloggers
+  Full text search in blogs
+  Search by tag list and tag cloud
+  Search in selected blogs
+  Messaging
+  Comments with threading
+  Admin panel
+ 

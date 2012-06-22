@@ -1,0 +1,133 @@
+// Place all the styles related to the articles controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+@import "compass";
+
+#blog_owner {
+  display: block;
+  margin: 20px 0;
+  font-size: 1.5em;
+}
+
+#blogger_avatar {
+  display: block;
+  width: 120px;
+}
+
+#blogger_avatar img {
+  @include border-radius(5px);
+}
+
+
+
+#add_post_link {
+  display: block;
+  float: left;
+  clear: left;
+  margin: 20px 0;
+  padding: 3px;
+  font-size: 1.2em;
+  color: #fff;
+  background: #56AAC2;
+  @include border-radius(3px);
+}
+ 
+#follow_unfollow_button {
+  margin: 20px 0;
+}
+
+#back_link {
+  display: block;
+  margin-bottom: 30px;
+  font-size: 1.2em;
+}
+
+#articles {
+  width: 100%;
+  margin-top: 30px;
+  clear: both;
+}
+
+#articles ul li {
+  display: block;
+  margin-bottom: 20px;
+}
+
+#blog_search_form {
+  margin: 10px;
+}
+
+#blog_search_form input[type=text] {
+  width: 85%;
+  height: 30px;
+  margin: 0;
+  padding: 0 5px;
+}
+
+#tag_cloud {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+}
+
+#blog_search_form input[type=submit] {
+  height: 36px;
+}
+
+#tag_list li {
+  display: inline !important;
+}
+
+#link_to_blog_index {
+  display: block;
+  float: left;
+  margin-bottom: 30px;
+  font-size: 1.5em;
+}
+
+#article_edit_link, #article_delete_link {
+  display: block;
+  float: right;
+  margin-left: 10px;
+}
+
+div.article_info {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+a.avatar {
+  display: block;
+  float: left;
+  height: 32px;
+  margin-right: 10px;
+  width: 32px;
+}
+
+.avatar img {
+  @include border-radius(3px);
+}
+
+
+a.name, .publicated {
+  display: block;
+  float: left;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+
+
+div.comments {
+  margin-top: 30px;
+}
+
+
+
+.css1 { font-size: 1.0em; }
+.css2 { font-size: 1.2em; }
+.css3 { font-size: 1.4em; }
+.css4 { font-size: 1.6em; }

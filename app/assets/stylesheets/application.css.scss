@@ -1,0 +1,155 @@
+/*
+ * This is a manifest file that'll automatically include all the stylesheets available in this directory
+ * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
+ * the top of the compiled file, but it's generally better to create a new file per style scope.
+ *= require_self
+ *= require_tree . 
+*/
+@import "compass/reset";
+@import "compass/css3";
+@import "compass/utilities";
+@import "blueprint/typography";
+
+
+
+body {
+    background: #ddd;
+    @include blueprint-typography(true);
+    
+  }
+
+body a {
+  text-decoration: none;
+}
+
+#wrapper {
+  width: 90%;
+  margin: 0 auto;
+}
+
+#header {
+  background: #56AAC2;
+  @include border-top-left-radius(10px);
+  @include border-top-right-radius(10px);
+  height: 140px;
+  width: 70%;
+  margin: 10px auto 0;
+  padding: 20px;
+  position: relative;
+}
+
+#logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 3em;
+  font-weight: 700;
+  color: #fff;
+}
+
+#main_menu {
+  font-size: 1.5em;
+  position: absolute;
+  right: 40px;
+  top: 80px;
+}
+
+
+#main_menu a:hover {
+  background: #fff;
+  color: #56AAC2;
+  @include border-radius(3px);
+  text-decoration: none;
+}
+
+
+#main_content {
+  background: #fff;
+  width: 70%;
+  margin: 0 auto;
+  min-height: 400px;
+  height: auto !important;
+  height: 400px;
+  padding: 20px;
+}
+
+#main_menu a {
+  display: block;
+  float: left;
+  margin-right: 10px;
+  padding: 0 5px;
+  color: #fff;
+}
+
+#message {
+  width: 60%;
+  margin: 20px auto;
+}
+
+#footer {
+  background: #56AAC2;
+  width: 70%;
+  height: 50px;
+  margin: 0 auto 10px;
+  @include border-bottom-left-radius(10px);
+  @include border-bottom-right-radius(10px);
+  padding: 20px;
+}
+
+#copyright {
+  color: #fff;
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.clear {
+  clear: both;
+}
+
+.notice, .alert {
+  border: 1px solid;
+  margin: 10px 0px;
+  padding:15px 10px 15px 50px;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+}
+
+.notice {
+  color: #4F8A10;
+  background-color: #DFF2BF;
+  background-image:url('/images/success.png');
+}
+
+.alert {
+  color: #D8000C;
+  background-color: #FFBABA;
+  background-image: url('/images/error.png');
+}
+
+.back_link {
+  font-size: 1.3em;
+}
+
+.breadcrumb {
+  font-size: 1.2em;
+  display: block;
+  margin-bottom: 30px;
+}
+
+.centered {
+  text-align: center;
+}
+
+.spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -16px;
+  margin-top: -16px;
+  text-align: center;
+  z-index: 1234;
+  overflow: auto;
+  width: 33px;
+  height: 37px;
+}
