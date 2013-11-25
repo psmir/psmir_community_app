@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe User do
-  
+
   describe 'mass assignment' do
     it { should_not allow_mass_assignment_of(:admin) }
   end
@@ -16,38 +16,6 @@ describe User do
     it { should validate_uniqueness_of :username }
   end
 
-  describe '.fetch' do
-    before do
-      Rails.cache.clear
-      @user = create_user!
-    end
-
-    it 'is not in the cache before the first .fetch call' do
-      Rails.cache.fetch("user_#{@user.id}").should be_nil
-    end
-
-    it 'is in the cache after the .fetch call' do
-      User.fetch(@user.id)
-      Rails.cache.fetch("user_#{@user.id}").should eq @user
-    end
-  end  
-
- describe 'removing from the cache' do
-    before do
-      @user = create_user!
-      User.fetch @user.id # the user is in cache now
-    end
-
-    it 'removes the user after save' do
-      @user.save
-      Rails.cache.fetch("user_#{@user.id}").should be_nil
-    end
-
-    it 'removes the user after destroy' do
-      @user.destroy
-      Rails.cache.fetch("user_#{@user.id}").should be_nil
-    end
-  end
 
   context '#follow/#unfollow' do
     before do

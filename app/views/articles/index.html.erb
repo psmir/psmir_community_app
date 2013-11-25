@@ -8,14 +8,14 @@
   <% if user_signed_in? && current_user != @user %>
     <div id="follow_unfollow_button">
       <% if current_user.bloggers.include? @user %>
-        <%= button_to 'Unfollow', unfollow_user_path(@user) %> 
+        <%= button_to 'Unfollow', unfollow_user_path(@user) %>
       <% else %>
-        <%= button_to 'Follow', follow_user_path(@user) %> 
+        <%= button_to 'Follow', follow_user_path(@user) %>
       <% end %>
     </div>
   <% end %>
 
-<% cache @cache_key do %>
+
 <div id='articles'>
   <ul>
     <% @articles.each do |article| %>
@@ -35,4 +35,3 @@
  </ul>
 <%= paginate @articles %>
 </div>
-<% end %>

@@ -6,7 +6,7 @@ describe CommentsController do
   describe 'GET #new' do
     before do
       controller.stub :authenticate_user!
-      Article.stub(:fetch).with('1').and_return @article = stub('article')
+      Article.stub(:find).with('1').and_return @article = stub('article')
     end
 
     def do_request(args = {})
@@ -38,7 +38,7 @@ describe CommentsController do
 
     before do
       controller.stub :authenticate_user!
-      Article.stub(:fetch).and_return @article = stub_model(Article, user: mock_model(User))
+      Article.stub(:find).and_return @article = stub_model(Article, user: mock_model(User))
       controller.stub(:current_user).and_return @current_user = stub_model(User)
       @comment = stub('comment').as_null_object
       Comment.stub(:build_from).with(@article, @current_user.id, 'some content').and_return @comment

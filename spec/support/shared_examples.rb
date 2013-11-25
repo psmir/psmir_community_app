@@ -5,7 +5,7 @@
       controller.stub(:current_user).and_return @current_user
       controller.stub(:user_signed_in?).and_return true
     end
-  end  
+  end
 
 
   shared_examples 'requiring authentication' do
@@ -15,10 +15,10 @@
     end
   end
 
-  shared_examples 'handler of a wrong user_id' do 
+  shared_examples 'handler of a wrong user_id' do
     context 'with a wrong user id' do
       before do
-        User.stub(:fetch).with('1').and_return nil
+        User.stub(:find).with('1').and_return nil
         do_request
       end
 
@@ -42,7 +42,7 @@
 
       it 'redirects to the root page' do
         response.should redirect_to root_path
-      end      
+      end
 
       it 'displays a message that article was not found' do
         flash[:alert].should == 'The article was not found'

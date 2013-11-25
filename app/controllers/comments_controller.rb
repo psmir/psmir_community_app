@@ -18,7 +18,7 @@ class CommentsController < ApplicationController
 
     @comment = Comment.build_from(@article, current_user.id, params[:comment][:body])
     begin
-      @comment.attach_to_comment_with_id params[:parent] if params[:parent] 
+      @comment.attach_to_comment_with_id params[:parent] if params[:parent]
     rescue ParentCommentNotFound => e
       flash[:alert] = e.message
       redirect_to user_article_path(@article.user, @article)
@@ -37,7 +37,7 @@ class CommentsController < ApplicationController
  private
 
   def fetch_article
-    @article = Article.fetch params[:article_id]
+    @article = Article.find(params[:article_id])
 
     if @article.nil?
       flash[:alert] = 'The article was not found'

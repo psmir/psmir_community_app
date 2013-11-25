@@ -5,7 +5,7 @@ describe ProfilesController do
   shared_examples 'profile fetching' do
     it 'fetches the profile to the @profile' do
       do_request
-      assigns[:profile].should == @profile 
+      assigns[:profile].should == @profile
     end
 
     context 'with wrong profile id' do
@@ -32,7 +32,7 @@ describe ProfilesController do
         Profile.stub(:find).with('1').and_return @profile = stub_model(Profile, user: mock_model(User))
         do_request
       end
-      
+
       it 'sets a message that the user is not allowed to do so' do
         flash[:alert].should == 'You are not allowed to do so'
       end
@@ -45,7 +45,7 @@ describe ProfilesController do
 
   describe 'GET #show' do
     before do
-      Profile.stub(:fetch).with('1').and_return @profile = stub('profile').as_null_object
+      Profile.stub(:find).with('1').and_return @profile = stub('profile').as_null_object
     end
 
     def do_request(args = {})
@@ -58,20 +58,20 @@ describe ProfilesController do
     end
 
     it_behaves_like 'profile fetching'
- 
+
     it 'finds the list of favorite bloggers and paginates it' do
       @favorite_bloggers = stub('favorite bloggers')
       @profile.stub_chain(:user, :bloggers, :page).with('1').and_return @favorite_bloggers
       do_request page: 1
       assigns[:favorite_bloggers].should == @favorite_bloggers
     end
-    
+
   end
- 
+
   describe 'GET #edit' do
     include_context 'authenticated user'
     before do
-      Profile.stub(:fetch).with('1').and_return @profile = stub_model(Profile, user: @current_user)
+      Profile.stub(:find).with('1').and_return @profile = stub_model(Profile, user: @current_user)
     end
 
     def do_request(args = {})
@@ -84,7 +84,7 @@ describe ProfilesController do
     it 'renders the edit template' do
       do_request
       response.should render_template :edit
-    end   
+    end
   end
 
   describe 'PUT #update' do
@@ -105,7 +105,7 @@ describe ProfilesController do
       @profile.should_receive(:update_attributes).with('params')
       do_request profile: 'params'
     end
- 
+
     context 'with valid params' do
       before do
         @profile.stub(:update_attributes).with('params').and_return true
@@ -119,9 +119,9 @@ describe ProfilesController do
       it 'redirects to the profile page' do
         response.should redirect_to profile_path(@profile)
       end
-      
+
     end
-    
+
     context 'with invalid params' do
       before do
         @profile.stub(:update_attributes).with('params').and_return false
@@ -135,21 +135,21 @@ describe ProfilesController do
       it 'renders the edit template' do
         response.should render_template :edit
       end
-    end   
+    end
   end
 
   describe 'GET #avatar' do
     before do
       @profile = mock_model(Profile).as_null_object
-      Profile.stub(:fetch).with('1').and_return @profile
+      Profile.stub(:find).with('1').and_return @profile
     end
 
     def do_request(args = {})
       get :avatar, { id: 1, style: 'style' }.merge(args)
-    end    
-  
+    end
+
     it_behaves_like 'profile fetching'
-    
+
     it 'should send the avatar' do
       @profile.stub(:get_avatar_file).with('style').and_return 'avatar_file'
       @profile.stub(:avatar_content_type).and_return 'content_type'

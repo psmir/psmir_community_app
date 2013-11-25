@@ -1,7 +1,6 @@
 class ProfilesController < ApplicationController
   before_filter :authenticate_user!, :except => [:show, :avatar]
-  before_filter :fetch_profile, :only => [:show, :edit, :avatar]
-  before_filter :find_profile, :only => [:update]
+  before_filter :find_profile, :only => [:show, :edit, :avatar, :update]
   before_filter :check_owner, :only => [:edit, :update]
 
 
@@ -20,7 +19,7 @@ class ProfilesController < ApplicationController
       flash[:alert] = 'The profile has not been updated'
       render :action => 'edit'
     end
-    
+
   end
 
   def avatar
@@ -29,20 +28,11 @@ class ProfilesController < ApplicationController
   end
 
 private
-  def fetch_profile
-    @profile = Profile.fetch params[:id]
-
-    if @profile.nil? 
-      flash[:alert] = 'The profile was not found'
-      redirect_to root_path
-      return
-    end
-  end
 
   def find_profile
     @profile = Profile.find params[:id]
 
-    if @profile.nil? 
+    if @profile.nil?
       flash[:alert] = 'The profile was not found'
       redirect_to root_path
       return
@@ -55,5 +45,5 @@ private
       redirect_to root_path
     end
   end
-  
+
 end

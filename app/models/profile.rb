@@ -1,7 +1,8 @@
 class Profile < ActiveRecord::Base
   belongs_to :user
   acts_as_taggable_on :interests
-  has_attached_file :avatar, 
+
+  has_attached_file :avatar,
     :default_url => '/images/noavatar_:style.jpeg',
     :url => '/profile/:id/avatar?style=:style',
     :storage => :database,
@@ -10,26 +11,16 @@ class Profile < ActiveRecord::Base
       :medium => {:geometry => "120x120>", :column => 'avatar_medium_file'},
       :thumb =>  {:geometry => "32x32>", :column => 'avatar_thumb_file'}
     }
+
   validates_presence_of :name
   validates_length_of :name, :maximum => 50
   validates_inclusion_of :gender, :in => ['male', 'female']
   validates_inclusion_of :birthday, :in => Date.new(1900, 1, 1)..(Date.today - 16.years)
 
-  after_save :remove_from_cache
-  after_destroy :remove_from_cache
-
-  def self.fetch(id)
-    Rails.cache.fetch("profile_#{id}") { Profile.find(id) }
-  end
 
   def get_avatar_file(style)
-   return avatar_thumb_file if style == 'thumb'
-   return avatar_medium_file if style == 'medium'
-   return avatar_file if style == 'original'
-  end
-
-private
-  def remove_from_cache
-    Rails.cache.delete "profile_#{self.id}"
+    return avatar_thumb_file if style == 'thumb'
+    return avatar_medium_file if style == 'medium'
+    return avatar_file if style == 'original'
   end
 end

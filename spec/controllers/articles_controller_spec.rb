@@ -10,20 +10,19 @@ describe ArticlesController do
         Article.stub(:find).with('1').and_return @article
         do_request
       end
- 
+
       it "redirects to the current user's blog" do
         response.should redirect_to user_articles_path(@current_user)
       end
     end
   end
-  
+
   describe "GET /users/:user_id/articles (#index)" do
     before do
       @user = mock_model User
-      User.stub(:fetch).with('1').and_return @user
+      User.stub(:find).with('1').and_return @user
       @articles = stub('articles').as_null_object
       Article.stub(:blogger_articles).with('1').and_return @articles
-      controller.stub(:index_cache_key).and_return 'key'
     end
 
     def do_request(args = {})
@@ -36,7 +35,7 @@ describe ArticlesController do
     end
 
     it_behaves_like 'handler of a wrong user_id'
-   
+
     it "returns the user's articles list" do
       do_request
       assigns[:articles].should == @articles
@@ -49,28 +48,23 @@ describe ArticlesController do
       assigns[:articles].should == paginated_articles
     end
 
-    it 'assigns a cache key' do
-      do_request
-      assigns[:cache_key].should == 'key'
-    end
-  
   end
 
   describe 'GET /users/:user_id/articles/:id (#show)' do
     before do
-      User.stub(:fetch).with('1').and_return @user = stub('user').as_null_object
-      Article.stub(:fetch).with('1').and_return @article = stub('article').as_null_object
+      User.stub(:find).with('1').and_return @user = stub('user').as_null_object
+      Article.stub(:find).with('1').and_return @article = stub('article').as_null_object
     end
 
     def do_request(args = {})
       get :show, { user_id: 1, id: 1 }.merge(args)
     end
-  
+
     it 'finds a user' do
       do_request
       assigns[:user].should eq @user
     end
-    
+
     it_behaves_like 'handler of a wrong user_id'
 
     it 'finds an article' do
@@ -84,7 +78,7 @@ describe ArticlesController do
       @article.stub_chain(:threaded_comments, :page).with('1').and_return comments = stub('comments')
       do_request page: 1
       assigns[:comments].should == comments
-    end 
+    end
   end
 
   describe 'GET #new' do
@@ -105,19 +99,19 @@ describe ArticlesController do
     end
 
     it 'should render the template :new' do
-      do_request 
+      do_request
       response.should render_template :new
     end
-    
+
   end
 
   describe 'POST #create' do
-    include_context 'authenticated user'  
- 
+    include_context 'authenticated user'
+
     before do
       @current_user.stub_chain(:articles, :build).with('params').and_return @article = stub_model(Article)
     end
- 
+
     def do_request(args = {})
       post :create, { article: 'params' }.merge(args)
     end
@@ -169,7 +163,7 @@ describe ArticlesController do
     include_context 'authenticated user'
 
     before do
-      Article.stub(:fetch).with('1').and_return @article = stub_model(Article, user: @current_user)
+      Article.stub(:find).with('1').and_return @article = stub_model(Article, user: @current_user)
     end
 
     def do_request(args = {})
@@ -182,7 +176,7 @@ describe ArticlesController do
       do_request
       assigns[:article].should == @article
     end
- 
+
     it_behaves_like 'handler of a wrong article_id'
     it_behaves_like 'accessible for an owner of the article only'
 
@@ -190,11 +184,11 @@ describe ArticlesController do
       do_request
       response.should render_template :edit
     end
-  
+
   end
- 
+
   describe 'PUT #update' do
-    include_context 'authenticated user'    
+    include_context 'authenticated user'
 
     before do
       @article = stub_model(Article, user: @current_user)
@@ -214,7 +208,7 @@ describe ArticlesController do
 
     it_behaves_like 'handler of a wrong article_id'
     it_behaves_like 'accessible for an owner of the article only'
- 
+
     it 'sets tag list of the article' do
       do_request tags: 'tag1, tag2'
       @article.tag_list.should == ['tag1', 'tag2']
@@ -230,7 +224,7 @@ describe ArticlesController do
       @article.should_receive(:update_attributes).with('params')
       do_request article: 'params'
     end
-    
+
     context 'with valid params' do
       before do
         @article.stub(:update_attributes).with('params').and_return true
@@ -245,7 +239,7 @@ describe ArticlesController do
         flash[:notice].should == 'The article has been updated'
       end
     end
-     
+
     context 'with invalid params' do
       before do
         @article.stub(:update_attributes).with('params').and_return false
@@ -260,7 +254,7 @@ describe ArticlesController do
         response.should render_template :edit
       end
     end
-   
+
   end
 
   describe 'DELETE #destroy' do
@@ -283,7 +277,7 @@ describe ArticlesController do
       do_request
       assigns[:article].should == @article
     end
-  
+
     it_behaves_like 'handler of a wrong article_id'
     it_behaves_like 'accessible for an owner of the article only'
 
@@ -291,11 +285,11 @@ describe ArticlesController do
       @article.should_receive :destroy
       do_request
     end
- 
+
     it 'sets the message that the article is deleted' do
       do_request
       flash[:notice].should == 'The article has been deleted'
-    end 
+    end
 
     it "redirects to the current user's blog" do
       do_request
@@ -303,9 +297,9 @@ describe ArticlesController do
     end
 
   end
-  
+
   shared_examples 'search page renderer' do
-    
+
     it 'renders the :search template' do
       do_request
       response.should render_template 'articles/search'
@@ -320,19 +314,12 @@ describe ArticlesController do
       do_request
       assigns[:tag_counts].should eq 'tag_counts'
     end
-
-    it 'assigns cache key' do
-      do_request
-      assigns[:key].should eq 'key'
-    end
-  
   end
-  
+
   context 'search articles' do
     before do
       @articles = stub('articles').as_null_object
       Article.stub(:tag_counts).and_return 'tag_counts'
-      controller.stub(:search_cache_key).and_return 'key'
     end
 
     describe 'GET #search' do
@@ -343,13 +330,13 @@ describe ArticlesController do
       def do_request(args = {})
         get :search, args
       end
- 
+
       it 'returns default articles list' do
         do_request
         assigns[:articles].should eq @articles
       end
 
-      it_should_behave_like 'search page renderer' 
+      it_should_behave_like 'search page renderer'
     end
 
     describe 'GET #search_by_tag' do
@@ -361,16 +348,16 @@ describe ArticlesController do
       def do_request(args = {})
         get :search_by_tag, { tag: 'unescaped' }.merge(args)
       end
-   
+
       it 'returns tagged articles' do
         do_request
         assigns[:articles].should eq @articles
       end
 
-      it_should_behave_like 'search page renderer' 
+      it_should_behave_like 'search page renderer'
     end
 
-    
+
     describe 'POST #search_by_query' do
       before do
         Article.stub(:search_by_query).with('query').and_return @articles
@@ -379,7 +366,7 @@ describe ArticlesController do
       def do_request(args = {})
         post :search_by_query, { query: 'query', mode: 'content' }.merge(args)
       end
-      
+
       it 'finds articles by relevance' do
         do_request
         assigns[:articles].should == @articles
@@ -390,10 +377,10 @@ describe ArticlesController do
         Article.stub(:search_by_tag).with('tag1, tag2').and_return tagged_articles
         do_request query: 'tag1, tag2', mode: 'tags'
         assigns[:articles].should == tagged_articles
-      end 
-    
+      end
+
       context 'when selected_blog parameter is received' do
-        
+
         context 'signed in user' do
           include_context 'authenticated user'
           it 'selects articles from favorite blogs' do
@@ -421,7 +408,7 @@ describe ArticlesController do
         do_request mode: 'wrong'
         response.should redirect_to root_path
       end
-       
+
       it_should_behave_like 'search page renderer'
 
       context 'via ajax' do
