@@ -17,42 +17,90 @@ describe ArticlesController do
     end
   end
 
-  describe "GET /users/:user_id/articles (#index)" do
+  describe "#index" do
+    let(:user) { stub_model(User) }
+    let(:articles) { double('articles').as_null_object }
+
     before do
-      @user = mock_model User
-      User.stub(:find).with('1').and_return @user
-      @articles = stub('articles').as_null_object
-      Article.stub(:blogger_articles).with('1').and_return @articles
+      Article.stub(:default_list).and_return articles
     end
 
-    def do_request(args = {})
-      get :index, { user_id: 1 }.merge(args)
+    context "for user" do
+      before do
+        User.stub(:find_by_id).with('1').and_return user
+      end
+
+      it 'finds a user' do
+        get :index, user_id: 1
+        assigns[:user].should == user
+      end
+
+      it "finds user's articles" do
+        user.stub_chain(:articles, :default_list).and_return articles
+        get :index, user_id: 1
+        assigns[:articles].should == articles
+      end
+
     end
 
-    it 'finds a user' do
-      do_request
-      assigns[:user].should == @user
-    end
-
-    it_behaves_like 'handler of a wrong user_id'
-
-    it "returns the user's articles list" do
-      do_request
-      assigns[:articles].should == @articles
+    it 'finds articles' do
+      get :index
+      assigns[:articles].should == articles
     end
 
     it 'paginates the articles list' do
-      paginated_articles = stub('paginated articles')
-      @articles.stub(:page).with('1').and_return paginated_articles
-      do_request page: 1
-      assigns[:articles].should == paginated_articles
+      articles.should_receive(:page).with('1')
+      get :index, page: 1
     end
 
+    it 'finds the tag counts' do
+      Article.stub(:tag_counts).and_return tag_counts = double
+      get :index
+      assigns[:tag_counts].should == tag_counts
+    end
+
+    it 'filters by tag' do
+      CGI.stub(:unescape).with('escaped').and_return 'unescaped'
+      articles.stub(:tagged_with).with('unescaped').and_return tagged_articles = double
+      get :index, tag: 'escaped'
+      assigns[:articles].should == tagged_articles
+    end
+
+    it 'filters by tag list' do
+      articles.stub(:tagged_with).with('tag1, tag2').and_return tagged_articles = double
+      get :index, query: 'tag1, tag2', mode: 'tags'
+      assigns[:articles].should == tagged_articles
+    end
+
+    it 'filters by content' do
+      articles.stub(:with_query).with('some query').and_return filtered_articles = double
+      get :index, query: 'some query', mode: 'content'
+      assigns[:articles].should == filtered_articles
+    end
+
+    context 'search in selected blogs' do
+      context 'signed in user' do
+        it 'searches in selected blogs' do
+          controller.stub(:current_user).and_return user = double
+          articles.stub(:in_selected_blogs).with(user).and_return selected_articles = double
+          get :index, selected_blogs: 'on'
+          assigns[:articles].should == selected_articles
+        end
+      end
+
+      context 'visitor' do
+        it 'does not search in selected blogs' do
+          articles.should_receive(:in_selected_blogs).never
+          get :index, selected_blogs: 'on'
+        end
+      end
+    end
   end
+
 
   describe 'GET /users/:user_id/articles/:id (#show)' do
     before do
-      User.stub(:find).with('1').and_return @user = stub('user').as_null_object
+      User.stub(:find_by_id).with('1').and_return @user = stub('user').as_null_object
       Article.stub(:find).with('1').and_return @article = stub('article').as_null_object
     end
 
@@ -65,14 +113,12 @@ describe ArticlesController do
       assigns[:user].should eq @user
     end
 
-    it_behaves_like 'handler of a wrong user_id'
-
     it 'finds an article' do
       do_request
       assigns[:article].should eq @article
     end
 
-    it_behaves_like 'handler of a wrong article_id'
+
 
     it 'finds the comments of the article and paginates them' do
       @article.stub_chain(:threaded_comments, :page).with('1').and_return comments = stub('comments')
@@ -177,7 +223,6 @@ describe ArticlesController do
       assigns[:article].should == @article
     end
 
-    it_behaves_like 'handler of a wrong article_id'
     it_behaves_like 'accessible for an owner of the article only'
 
     it 'renders the edit template' do
@@ -206,7 +251,6 @@ describe ArticlesController do
       assigns[:article].should == @article
     end
 
-    it_behaves_like 'handler of a wrong article_id'
     it_behaves_like 'accessible for an owner of the article only'
 
     it 'sets tag list of the article' do
@@ -278,7 +322,6 @@ describe ArticlesController do
       assigns[:article].should == @article
     end
 
-    it_behaves_like 'handler of a wrong article_id'
     it_behaves_like 'accessible for an owner of the article only'
 
     it 'deletes the article' do

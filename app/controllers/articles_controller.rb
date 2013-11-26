@@ -1,14 +1,19 @@
 require 'cgi'
 class ArticlesController < ApplicationController
   before_filter :authenticate_user!, :except => [:index, :show, :search, :search_by_tag, :search_by_query]
-  before_filter :fetch_user, :only => [:show, :index]
+  before_filter :find_user, :only => [:show, :index]
   before_filter :find_article, :only => [:show, :edit, :update, :destroy]
   before_filter :article_owner, :only => [:edit, :update, :destroy]
 
 
 
   def index
-    @articles = Article.blogger_articles(params[:user_id]).page params[:page]
+    @articles = articles.default_list.page(params[:page])
+    @articles = @articles.tagged_with(unescaped_tag) if params[:tag]
+    @articles = @articles.tagged_with(params[:query]) if params[:query] && params[:mode] == 'tags'
+    @articles = @articles.with_query(params[:query]) if params[:query] && params[:mode] == 'content'
+    @articles = @articles.in_selected_blogs(current_user) if params[:selected_blogs] && current_user
+    @tag_counts = Article.tag_counts
   end
 
   def new
@@ -87,27 +92,24 @@ class ArticlesController < ApplicationController
   private
 
   def find_article
-    @article = Article.find params[:id]
-
-    if @article.nil?
-      flash[:alert] = 'The article was not found'
-      redirect_to root_path
-    end
+    @article = Article.find(params[:id])
   end
 
-  def fetch_user
-    @user = User.find(params[:user_id])
-
-    if @user.nil?
-      flash[:alert] = 'The user was not found'
-      redirect_to root_path
-    end
+  def find_user
+    @user = User.find_by_id(params[:user_id])
   end
 
+  def articles
+    @user ? @user.articles : Article.scoped
+  end
 
   def article_owner
     if @article.user != current_user
       redirect_to user_articles_path(current_user)
     end
+  end
+
+  def unescaped_tag
+    CGI.unescape params[:tag]
   end
 end

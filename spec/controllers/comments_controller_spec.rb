@@ -20,7 +20,6 @@ describe CommentsController do
       assigns[:article].should == @article
     end
 
-    it_behaves_like 'handler of a wrong article_id'
 
     it 'assigns a new Comment instance to the @comment' do
       Comment.stub(:new).and_return article = stub('article')
@@ -54,8 +53,6 @@ describe CommentsController do
       do_request
       assigns[:article].should == @article
     end
-
-    it_behaves_like 'handler of a wrong article_id'
 
     it 'creates a new comment and assigns it to the @comment' do
       do_request

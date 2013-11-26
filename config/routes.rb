@@ -17,15 +17,15 @@ Community::Application.routes.draw do
 
   resources :profiles, :except => [:index, :new, :create, :destroy]
 
-  resources :articles, :except => [:index , :show] do
+  resources :articles, :except => [:show] do
     resources :comments
-  end  
+  end
 
   match '/about' => 'pages#about'
   match '/profile/:id/avatar' => 'profiles#avatar', :as => :avatar
   get '/articles/tagged' => 'articles#search_by_tag', :as => :tagged_articles
-  match '/articles/search' => 'articles#search_by_query', :as => :search_articles 
-          
+  match '/articles/search' => 'articles#search_by_query', :as => :search_articles
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
