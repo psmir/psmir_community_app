@@ -7,20 +7,20 @@
         <ul id="tag_list">
           <% article.tags.each do |item| %>
             <li>
-              <%= link_to item, tagged_articles_path(:tag => CGI::escape(item.name)) %>
+              <%= link_to item, articles_path(:tag => CGI::escape(item.name)) %>
             </li>
           <% end %>
         </ul>
         <div class="article_info">
-          
+
           <%= link_to image_tag(article.user.profile.avatar.url(:thumb)),
              profile_path(article.user.profile), :class => 'avatar' %>
-          <%= link_to "#{article.user.username} (#{article.user.profile.name})", 
+          <%= link_to "#{article.user.username} (#{article.user.profile.name})",
             profile_path(article.user.profile), :class => 'name' %>
           <span class="publicated"><%= time_ago_in_words(article.created_at) %> ago</span>
           <div class="clear">&nbsp;</div>
         </div>
-        
+
       </li>
     <% end %>
  </ul>

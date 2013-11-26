@@ -5,23 +5,23 @@ feature "Search in blogs" do
   background do
     @user1 = create_user!
     @user2 = create_user!
-     
+
     @article1 = Factory(
-      :article, 
-      :title    => 'article1', 
+      :article,
+      :title    => 'article1',
       :content  => 'Some content for article1',
       :user_id  => @user1.id,
       :tag_list => 'first tag, second tag')
 
     @article2 = Factory(
-      :article, 
-      :title    => 'article2', 
+      :article,
+      :title    => 'article2',
       :content  => 'Some content for article2',
       :user_id  => @user2.id,
       :tag_list => 'second tag')
-    
+
     visit root_path
-  
+
   end
 
   scenario 'Search by tag cloud' do
@@ -32,7 +32,7 @@ feature "Search in blogs" do
     page.should have_content 'article1'
     page.should have_content 'article2'
   end
-    
+
   scenario 'Full-text search' do
     choose 'by content'
     fill_in 'query', :with => 'Some for article1'

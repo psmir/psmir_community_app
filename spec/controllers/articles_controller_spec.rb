@@ -6,7 +6,6 @@ describe ArticlesController do
     context 'when the article does not belong to the current user' do
       before do
         @article = stub_model(Article, user: mock_model(User))
-        Article.stub(:fetch).with('1').and_return @article
         Article.stub(:find).with('1').and_return @article
         do_request
       end
@@ -82,7 +81,7 @@ describe ArticlesController do
       context 'signed in user' do
         it 'searches in selected blogs' do
           controller.stub(:current_user).and_return user = double
-          articles.stub(:in_selected_blogs).with(user).and_return selected_articles = double
+          articles.stub(:in_blogs_selected_by).with(user).and_return selected_articles = double
           get :index, selected_blogs: 'on'
           assigns[:articles].should == selected_articles
         end
@@ -90,7 +89,7 @@ describe ArticlesController do
 
       context 'visitor' do
         it 'does not search in selected blogs' do
-          articles.should_receive(:in_selected_blogs).never
+          articles.should_receive(:in_blogs_selected_by).never
           get :index, selected_blogs: 'on'
         end
       end
@@ -337,130 +336,6 @@ describe ArticlesController do
     it "redirects to the current user's blog" do
       do_request
       response.should redirect_to user_articles_path(@current_user)
-    end
-
-  end
-
-  shared_examples 'search page renderer' do
-
-    it 'renders the :search template' do
-      do_request
-      response.should render_template 'articles/search'
-    end
-
-    it 'paginates articles list' do
-      @articles.should_receive(:page).with('1')
-      do_request page: 1
-    end
-
-    it 'assigns tag counts for tag cloud' do
-      do_request
-      assigns[:tag_counts].should eq 'tag_counts'
-    end
-  end
-
-  context 'search articles' do
-    before do
-      @articles = stub('articles').as_null_object
-      Article.stub(:tag_counts).and_return 'tag_counts'
-    end
-
-    describe 'GET #search' do
-      before do
-        Article.stub(:default_list).and_return @articles
-      end
-
-      def do_request(args = {})
-        get :search, args
-      end
-
-      it 'returns default articles list' do
-        do_request
-        assigns[:articles].should eq @articles
-      end
-
-      it_should_behave_like 'search page renderer'
-    end
-
-    describe 'GET #search_by_tag' do
-      before do
-        CGI.stub(:unescape).with('unescaped').and_return 'escaped'
-        Article.stub(:search_by_tag).with('escaped').and_return @articles
-      end
-
-      def do_request(args = {})
-        get :search_by_tag, { tag: 'unescaped' }.merge(args)
-      end
-
-      it 'returns tagged articles' do
-        do_request
-        assigns[:articles].should eq @articles
-      end
-
-      it_should_behave_like 'search page renderer'
-    end
-
-
-    describe 'POST #search_by_query' do
-      before do
-        Article.stub(:search_by_query).with('query').and_return @articles
-      end
-
-      def do_request(args = {})
-        post :search_by_query, { query: 'query', mode: 'content' }.merge(args)
-      end
-
-      it 'finds articles by relevance' do
-        do_request
-        assigns[:articles].should == @articles
-      end
-
-      it 'finds articles by tag list' do
-        tagged_articles = stub('tagged articles').as_null_object
-        Article.stub(:search_by_tag).with('tag1, tag2').and_return tagged_articles
-        do_request query: 'tag1, tag2', mode: 'tags'
-        assigns[:articles].should == tagged_articles
-      end
-
-      context 'when selected_blog parameter is received' do
-
-        context 'signed in user' do
-          include_context 'authenticated user'
-          it 'selects articles from favorite blogs' do
-            favorite_articles = stub('favorite articles').as_null_object
-            @articles.stub(:in_blogs_selected_by).with(@current_user).and_return favorite_articles
-
-            do_request selected_blogs: 'on'
-            assigns[:articles].should == favorite_articles
-          end
-
-          context 'plain visitor' do
-            before do
-              controller.stub(:user_signed_in?).and_return false
-            end
-
-            it 'does not select from favorite blogs' do
-              @articles.should_receive(:in_blogs_selected_by).never
-              do_request selected_blogs: 'on'
-            end
-          end
-        end
-      end
-
-      it 'redirects to the root page if the mode param is not the <content> or <tags>' do
-        do_request mode: 'wrong'
-        response.should redirect_to root_path
-      end
-
-      it_should_behave_like 'search page renderer'
-
-      context 'via ajax' do
-        it 'renders search.js template' do
-          do_request format: 'js'
-          response.should render_template 'search.js'
-        end
-      end
-
     end
   end
 end

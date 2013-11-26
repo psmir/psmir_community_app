@@ -7,7 +7,7 @@
   <p><%= @article.content.html_safe %></p>
     <ul id="tag_list">
         <% @article.tags.each do |item| %>
-          <li><%= link_to item, tagged_articles_path(:tag => CGI::escape(item.name)) %></li>
+          <li><%= link_to item, articles_path(:tag => CGI::escape(item.name)) %></li>
         <% end %>
     </ul>
 

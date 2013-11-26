@@ -1,6 +1,6 @@
 require 'cgi'
 class ArticlesController < ApplicationController
-  before_filter :authenticate_user!, :except => [:index, :show, :search, :search_by_tag, :search_by_query]
+  before_filter :authenticate_user!, :except => [:index, :show]
   before_filter :find_user, :only => [:show, :index]
   before_filter :find_article, :only => [:show, :edit, :update, :destroy]
   before_filter :article_owner, :only => [:edit, :update, :destroy]
@@ -12,7 +12,7 @@ class ArticlesController < ApplicationController
     @articles = @articles.tagged_with(unescaped_tag) if params[:tag]
     @articles = @articles.tagged_with(params[:query]) if params[:query] && params[:mode] == 'tags'
     @articles = @articles.with_query(params[:query]) if params[:query] && params[:mode] == 'content'
-    @articles = @articles.in_selected_blogs(current_user) if params[:selected_blogs] && current_user
+    @articles = @articles.in_blogs_selected_by(current_user) if params[:selected_blogs] && current_user
     @tag_counts = Article.tag_counts
   end
 
@@ -57,37 +57,6 @@ class ArticlesController < ApplicationController
     redirect_to user_articles_path(current_user)
   end
 
-
-  def search
-    @articles = Article.default_list.page params[:page]
-    @tag_counts = Article.tag_counts
-  end
-
-  def search_by_tag
-    tag = CGI.unescape params[:tag]
-    @articles = Article.search_by_tag(tag).page params[:page]
-    @tag_counts = Article.tag_counts
-    render 'articles/search'
-  end
-
-  def search_by_query
-    if not ['content', 'tags'].include? params[:mode]
-      redirect_to root_path
-      return
-    end
-
-    @articles = Article.search_by_query params[:query] if params[:mode] == 'content'
-    @articles = Article.search_by_tag params[:query] if params[:mode] == 'tags'
-    @articles = @articles.in_blogs_selected_by current_user if params[:selected_blogs] && user_signed_in?
-    @articles = @articles.page params[:page]
-
-    @tag_counts = Article.tag_counts
-
-    respond_to do |format|
-     format.html { render 'articles/search' }
-     format.js { render 'articles/search.js' }
-    end
-  end
 
   private
 

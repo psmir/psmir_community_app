@@ -1,5 +1,5 @@
 <div id="blog_search_form">
-    <%= form_tag search_articles_path, :remote => true do %>
+    <%= form_tag articles_path, :method => :get, :remote => true do %>
       <%= radio_button_tag :mode, 'content', params[:mode] != 'tags' %>
       <%= label_tag :mode_content, 'by content'  %>
       <%= radio_button_tag :mode, 'tags', params[:mode] == 'tags' %>
@@ -18,9 +18,7 @@
 <div id="tag_cloud">
   <% tag_cloud(@tag_counts, %w(css1 css2 css3 css4)) do |tag, css_class| %>
     <span>
-      <%= link_to tag.name, { :action => :search_by_tag, :tag => tag.name }, :class => css_class %>
+      <%= link_to tag.name, { :tag => tag.name }, :class => css_class %>
     </span>
   <% end %>
 </div>
-
-<%= render 'articles' %>
