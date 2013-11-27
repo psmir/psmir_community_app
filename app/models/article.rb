@@ -8,12 +8,8 @@ class Article < ActiveRecord::Base
 
 
   scope :default_list, -> { with_users_and_profiles.with_tags.by_newest }
-  scope :search_by_query, lambda { |query| with_query(query).includes(:tags, { :user => :profile }) }
-  scope :search_by_tag, lambda { |tag| tagged_with(tag).includes(:tags,
-    { :user => :profile }).order('created_at desc') }
-  scope :in_blogs_selected_by,
-    lambda { |user| where("user_id in (select blogger_id from blogger_readers where reader_id =#{user.id})") }
-
+  scope :in_blogs_selected_by, ->(user) { where("user_id IN
+   (SELECT blogger_id FROM blogger_readers WHERE reader_id =#{user.id})") }
   scope :by_newest, order('created_at DESC')
   scope :with_tags, includes(:tags)
   scope :with_users_and_profiles, includes(:user => :profile)

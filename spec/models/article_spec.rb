@@ -30,32 +30,6 @@ describe Article do
     end
   end
 
-  describe '.search_by_tag' do
-    before do
-      @user = create_user!
-      @article1 = FactoryGirl.create(
-        :article,
-        :user => @user,
-        :created_at => 1.day.ago,
-        :tag_list => 'important')
-
-      @article2 = FactoryGirl.create(
-        :article,
-        :user => @user,
-        :created_at => 2.day.ago,
-        :tag_list => 'important')
-
-      @article3 = FactoryGirl.create(
-        :article,
-        :user => @user,
-        :created_at => 3.day.ago,
-        :tag_list => 'unimportant')
-    end
-
-    it 'returns articles ordered from new to old that have the tag' do
-      Article.search_by_tag('important').should == [@article1, @article2]
-    end
-  end
 
   describe '.in_blogs_selected_by' do
     before do
