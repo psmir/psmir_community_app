@@ -33,6 +33,7 @@ end
 
 group :test do
   gem 'capybara'
+  gem 'capybara-webkit'
   gem 'factory_girl_rails'
   gem 'spork', '~> 0.9.0.rc'
   gem 'launchy'

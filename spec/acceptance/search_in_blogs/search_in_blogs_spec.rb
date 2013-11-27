@@ -41,7 +41,7 @@ feature "Search in blogs" do
     page.should_not have_content 'article2'
   end
 
-  scenario 'Full-text search via ajax', :type => :request do
+  scenario 'Full-text search via ajax', :js => true do
     choose 'by content'
     fill_in 'query', :with => 'Some for article1'
     click_button 'Search'
