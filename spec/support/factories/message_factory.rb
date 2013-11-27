@@ -1,4 +1,8 @@
-Factory.define :message do |message|
-  message.sequence(:title) { |n| "title#{n}" }
-  message.sequence(:message) { |n| "message#{n}" }
+FactoryGirl.define do
+  factory :message do
+    sequence(:title) { |n| "title#{n}" }
+    sequence(:message) { |n| "message#{n}" }
+    association :sender
+    association :recipient
+  end
 end

@@ -21,37 +21,37 @@ describe Article do
   describe '.default_list' do
     before do
       @user = create_user!
-      @article1 = Factory(:article, :user_id => @user.id, :created_at => 1.day.ago)
-      @article2 = Factory(:article, :user_id => @user.id, :created_at => 2.days.ago)
+      @article1 = FactoryGirl.create(:article, :user => @user, :created_at => 1.day.ago)
+      @article2 = FactoryGirl.create(:article, :user => @user, :created_at => 2.days.ago)
     end
 
     it 'returns articles ordered from new to old' do
       Article.default_list.should == [@article1, @article2]
     end
-  end 
+  end
 
   describe '.search_by_tag' do
     before do
       @user = create_user!
-      @article1 = Factory(
-        :article, 
-        :user_id => @user.id, 
-        :created_at => 1.day.ago, 
+      @article1 = FactoryGirl.create(
+        :article,
+        :user => @user,
+        :created_at => 1.day.ago,
         :tag_list => 'important')
-      
-      @article2 = Factory(
-        :article, 
-        :user_id => @user.id, 
-        :created_at => 2.day.ago, 
+
+      @article2 = FactoryGirl.create(
+        :article,
+        :user => @user,
+        :created_at => 2.day.ago,
         :tag_list => 'important')
-      
-      @article3 = Factory(
-        :article, 
-        :user_id => @user.id, 
-        :created_at => 3.day.ago, 
+
+      @article3 = FactoryGirl.create(
+        :article,
+        :user => @user,
+        :created_at => 3.day.ago,
         :tag_list => 'unimportant')
     end
-  
+
     it 'returns articles ordered from new to old that have the tag' do
       Article.search_by_tag('important').should == [@article1, @article2]
     end
@@ -64,10 +64,10 @@ describe Article do
       @tom  = create_user!
       @john.bloggers << @bob
 
-      @article1 = Factory(:article, :user_id => @bob.id)
-      @article2 = Factory(:article, :user_id => @tom.id) 
+      @article1 = FactoryGirl.create(:article, :user => @bob)
+      @article2 = FactoryGirl.create(:article, :user => @tom)
     end
-   
+
     it 'returns articles from selected blogs only' do
       Article.in_blogs_selected_by(@john).should == [@article1]
     end

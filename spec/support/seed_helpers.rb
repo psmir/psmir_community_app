@@ -3,10 +3,10 @@ module SeedHelpers
     user = FactoryGirl.build(:user, attributes)
     user.save
     user.confirm!
-    Factory(:profile, :user_id => user.id)
+    FactoryGirl.create(:profile, :user => user)
     user
   end
-  
+
 end
 
 RSpec.configure do |config|

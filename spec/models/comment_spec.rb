@@ -3,7 +3,7 @@ require 'my_exceptions'
 
 describe Comment do
 
-  describe 'mass assinment' do
+  describe 'mass assignment' do
     it { should_not allow_mass_assignment_of([:user_id, :parent_id, :level]) }
   end
 

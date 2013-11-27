@@ -3,10 +3,10 @@ require 'acceptance/acceptance_helper'
 feature 'Article page controls visibility' do
   before do
     @blogger = create_user!(:username => 'bob')
-    @article = Factory(:article, :user_id => @blogger.id)
+    @article = FactoryGirl.create(:article, :user => @blogger)
     @user = create_user!
     @comment = Comment.build_from(@article, @user, 'Some comment')
-    @comment.save    
+    @comment.save
   end
 
   scenario %q{ Visitor should see: link to blog index

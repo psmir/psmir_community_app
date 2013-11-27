@@ -1,4 +1,7 @@
-Factory.define :article do |article|
-  article.sequence(:title) { |n| "title#{n}" }
-  article.sequence(:content) { |n| "content#{n}" }
+FactoryGirl.define  do
+  factory :article do
+    sequence(:title) { |n| "title#{n}" }
+    sequence(:content) { |n| "content#{n}" }
+    association :user
+  end
 end
