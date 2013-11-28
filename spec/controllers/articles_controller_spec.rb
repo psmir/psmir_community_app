@@ -1,19 +1,10 @@
 require 'spec_helper'
 
 describe ArticlesController do
-
-  shared_examples 'accessible for an owner of the article only' do
-    context 'when the article does not belong to the current user' do
-      before do
-        @article = stub_model(Article, user: mock_model(User))
-        Article.stub(:find).with('1').and_return @article
-        do_request
-      end
-
-      it "redirects to the current user's blog" do
-        response.should redirect_to user_articles_path(@current_user)
-      end
-    end
+  before do
+    @ability = Object.new
+    @ability.extend(CanCan::Ability)
+    @controller.stub(:current_ability).and_return(@ability)
   end
 
   describe "#index" do
@@ -97,71 +88,42 @@ describe ArticlesController do
   end
 
 
-  describe 'GET /users/:user_id/articles/:id (#show)' do
+  describe '#show' do
     before do
       User.stub(:find_by_id).with('1').and_return @user = stub('user').as_null_object
       Article.stub(:find).with('1').and_return @article = stub('article').as_null_object
+      @article.stub_chain(:threaded_comments, :page).with('1').and_return @comments = stub('comments')
+      get :show, user_id: 1, id: 1, page: 1
     end
 
-    def do_request(args = {})
-      get :show, { user_id: 1, id: 1 }.merge(args)
-    end
-
-    it 'finds a user' do
-      do_request
-      assigns[:user].should eq @user
-    end
-
-    it 'finds an article' do
-      do_request
-      assigns[:article].should eq @article
-    end
-
-
-
-    it 'finds the comments of the article and paginates them' do
-      @article.stub_chain(:threaded_comments, :page).with('1').and_return comments = stub('comments')
-      do_request page: 1
-      assigns[:comments].should == comments
-    end
+    it { should assign_to(:user).with @user }
+    it { should assign_to(:article).with @article }
+    it { should assign_to(:comments).with @comments }
   end
 
-  describe 'GET #new' do
+  describe '#new' do
+    include_context 'authenticated user'
+
     before do
-      controller.stub :authenticate_user!
+      @ability.can :create, Article
+      get :new
     end
 
-    def do_request(args = {})
-      get :new, args
-    end
-
-    it_behaves_like 'requiring authentication'
-
-    it 'assigns a new Article instance to the @article' do
-      Article.stub(:new).and_return :new_article
-      do_request
-      assigns[:article].should eq :new_article
-    end
-
-    it 'should render the template :new' do
-      do_request
-      response.should render_template :new
-    end
-
+    it { assigns[:article].should be_instance_of Article }
+    it { should render_template :new }
   end
 
-  describe 'POST #create' do
+  describe '#create' do
     include_context 'authenticated user'
 
     before do
       @current_user.stub_chain(:articles, :build).with('params').and_return @article = stub_model(Article)
+      @ability.can :create, Article
     end
 
     def do_request(args = {})
       post :create, { article: 'params' }.merge(args)
     end
-
-    it_behaves_like 'requiring authentication'
 
     it 'builds an article object and assigns it to the @article' do
       do_request
@@ -179,13 +141,8 @@ describe ArticlesController do
         do_request
       end
 
-      it 'redirects to the article page' do
-        response.should redirect_to user_article_path(@current_user, @article)
-      end
-
-      it 'informs that a new article has been created' do
-        flash[:notice].should == 'The article has been created'
-      end
+      it { should redirect_to user_article_path(@current_user, @article) }
+      it { flash[:notice].should == 'The article has been created' }
     end
 
     context 'with invalid parameters' do
@@ -194,63 +151,44 @@ describe ArticlesController do
         do_request
       end
 
-      it 'informs that an article has not been created' do
-        flash[:alert].should == 'The article has not been created'
-      end
-
-      it 'renders the :new template' do
-        response.should render_template 'articles/new'
-      end
+      it { flash[:alert].should == 'The article has not been created' }
+      it { should render_template 'articles/new' }
     end
   end
 
-  describe 'GET #edit' do
+  describe '#edit' do
     include_context 'authenticated user'
 
     before do
-      Article.stub(:find).with('1').and_return @article = stub_model(Article, user: @current_user)
+      Article.stub(:find).with('1').and_return @article = stub_model(Article)
+      @ability.can :edit, @article
+      get :edit, id: 1
     end
 
-    def do_request(args = {})
-      get :edit, { id: 1 }.merge(args)
-    end
+    it { should assign_to(:article).with @article }
 
-    it_behaves_like 'requiring authentication'
 
-    it 'finds an article and assigns it to the @article' do
-      do_request
-      assigns[:article].should == @article
-    end
-
-    it_behaves_like 'accessible for an owner of the article only'
-
-    it 'renders the edit template' do
-      do_request
-      response.should render_template :edit
-    end
-
+    it { should render_template :edit }
   end
 
-  describe 'PUT #update' do
+  describe '#update' do
     include_context 'authenticated user'
 
     before do
       @article = stub_model(Article, user: @current_user)
       Article.stub(:find).with('1').and_return @article
+      @ability.can :update, @article
     end
 
     def do_request(args = {})
       put :update, { id: 1 }.merge(args)
     end
 
-    it_behaves_like 'requiring authentication'
-
-    it 'finds the article and assigns it to the @article' do
+    it 'assigns the @article' do
       do_request
       assigns[:article].should == @article
     end
 
-    it_behaves_like 'accessible for an owner of the article only'
 
     it 'sets tag list of the article' do
       do_request tags: 'tag1, tag2'
@@ -274,13 +212,8 @@ describe ArticlesController do
         do_request article: 'params'
       end
 
-      it 'redirects to the article page' do
-        response.should redirect_to user_article_path(@current_user, @article)
-      end
-
-      it 'sets a message that the article has been updated' do
-        flash[:notice].should == 'The article has been updated'
-      end
+      it { should redirect_to user_article_path(@current_user, @article) }
+      it { flash[:notice].should == 'The article has been updated' }
     end
 
     context 'with invalid params' do
@@ -289,53 +222,25 @@ describe ArticlesController do
         do_request article: 'params'
       end
 
-      it 'sets message about fail' do
-        flash[:alert].should == 'The article has not been updated'
-      end
-
-      it 'renders :edit template' do
-        response.should render_template :edit
-      end
+      it { flash[:alert].should == 'The article has not been updated' }
+      it { response.should render_template :edit }
     end
-
   end
 
-  describe 'DELETE #destroy' do
+  describe '#destroy' do
     include_context 'authenticated user'
 
     before do
-      controller.stub :render
       @article = stub_model(Article, user: @current_user)
       @article.stub(:destroy)
       Article.stub(:find).with('1').and_return @article
-    end
-
-    def do_request(args = {})
-      delete :destroy, { id: 1 }.merge(args)
-    end
-
-    it_behaves_like 'requiring authentication'
-
-    it 'finds the article and assigns it to the @article' do
-      do_request
-      assigns[:article].should == @article
-    end
-
-    it_behaves_like 'accessible for an owner of the article only'
-
-    it 'deletes the article' do
+      @ability.can :destroy, @article
       @article.should_receive :destroy
-      do_request
+
+      delete :destroy, id: 1
     end
 
-    it 'sets the message that the article is deleted' do
-      do_request
-      flash[:notice].should == 'The article has been deleted'
-    end
-
-    it "redirects to the current user's blog" do
-      do_request
-      response.should redirect_to user_articles_path(@current_user)
-    end
+    it { flash[:notice].should == 'The article has been deleted' }
+    it { should redirect_to user_articles_path(@current_user) }
   end
 end

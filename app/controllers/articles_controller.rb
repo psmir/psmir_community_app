@@ -3,7 +3,8 @@ class ArticlesController < ApplicationController
   before_filter :authenticate_user!, :except => [:index, :show]
   before_filter :find_user, :only => [:show, :index]
   before_filter :find_article, :only => [:show, :edit, :update, :destroy]
-  before_filter :article_owner, :only => [:edit, :update, :destroy]
+
+  authorize_resource :except => [:index, :show]
 
 
 
@@ -42,6 +43,7 @@ class ArticlesController < ApplicationController
 
   def update
     @article.tag_list = params[:tags] if params[:tags]
+
     if @article.update_attributes(params[:article])
       flash[:notice] = 'The article has been updated'
       redirect_to user_article_path(current_user, @article)
@@ -70,12 +72,6 @@ class ArticlesController < ApplicationController
 
   def articles
     @user ? @user.articles : Article.scoped
-  end
-
-  def article_owner
-    if @article.user != current_user
-      redirect_to user_articles_path(current_user)
-    end
   end
 
   def unescaped_tag

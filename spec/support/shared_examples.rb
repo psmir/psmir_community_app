@@ -14,3 +14,10 @@
       do_request
     end
   end
+
+  shared_examples 'requiring authorization' do
+    it 'authorize the user' do
+      controller.should_receive :authorize!
+      do_request
+    end
+  end

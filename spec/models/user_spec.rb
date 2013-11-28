@@ -1,6 +1,23 @@
 require 'spec_helper'
+require "cancan/matchers"
 
 describe User do
+  describe "abilities" do
+    subject { Ability.new(user) }
+
+    context "admin" do
+      let(:user){ FactoryGirl.create(:user, admin: true) }
+
+      it { should be_able_to(:manage, Article.new) }
+    end
+
+    context "user" do
+      let(:user){ FactoryGirl.create(:user) }
+      it { should be_able_to(:read, Article.new) }
+      it { should be_able_to(:manage, FactoryGirl.create(:article, user: user)) }
+      it { should_not be_able_to(:manage, Article.new) }
+    end
+  end
 
   describe 'mass assignment' do
     it { should_not allow_mass_assignment_of(:admin) }
