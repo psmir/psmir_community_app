@@ -19,7 +19,7 @@ feature "Viewing an article", %q{
   scenario 'Viewing an article' do
     visit user_articles_path(@user)
     click_link 'Some title'
-    current_path.should == user_article_path(@user, @article)
+    current_path.should == article_path(@article)
 
     page.should have_content 'Some title'
     page.should have_content 'Some content'

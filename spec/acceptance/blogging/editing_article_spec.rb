@@ -28,7 +28,7 @@ feature "Editing an article", %q{
       :tag_list => 'first tag, third tag'
     )
 
-    current_path.should == user_article_path(@user, @article)
+    current_path.should == article_path(@article)
     page.should have_content 'The article has been updated'
     page.should have_content 'New title'
     page.should have_content 'New content'

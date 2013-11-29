@@ -21,7 +21,7 @@ feature "Creating an article", %q{
     )
 
     article = Article.first
-    current_path.should == user_article_path(@user, article)
+    current_path.should == article_path(article)
     page.should have_content 'The article has been created'
     page.should have_content 'Some title'
     page.should have_content 'Some content'

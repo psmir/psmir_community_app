@@ -42,7 +42,7 @@ feature "Reviewing results", %q{
     page.should have_content snippet(article.content, 100, '...')
     page.should have_content 'some tag'
     click_link 'Some title'
-    current_path.should == user_article_path(@user, article)
+    current_path.should == article_path(article)
 
     visit root_path
     click_link @user.profile.name

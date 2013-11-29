@@ -27,7 +27,7 @@ class ArticlesController < ApplicationController
 
     if @article.save
       flash[:notice] = 'The article has been created'
-      redirect_to user_article_path(current_user, @article)
+      redirect_to article_path(@article)
     else
       flash[:alert] = 'The article has not been created'
       render :action => 'new'
@@ -35,6 +35,7 @@ class ArticlesController < ApplicationController
   end
 
   def show
+    @user = @article.user
     @comments = @article.threaded_comments.page(params[:page])
   end
 
@@ -46,7 +47,7 @@ class ArticlesController < ApplicationController
 
     if @article.update_attributes(params[:article])
       flash[:notice] = 'The article has been updated'
-      redirect_to user_article_path(current_user, @article)
+      redirect_to article_path(@article)
     else
       flash[:alert] = 'The article has not been updated'
       render :action => 'edit'

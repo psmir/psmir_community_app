@@ -2,7 +2,7 @@
   <ul>
     <% @articles.each do |article| %>
       <li>
-        <h4><%= link_to article.title, user_article_path(article.user, article) %></h4>
+        <h4><%= link_to article.title, article_path(article) %></h4>
         <p><%= snippet(article.content, 100, '...').html_safe %></p>
         <ul id="tag_list">
           <% article.tags.each do |item| %>

@@ -90,10 +90,10 @@ describe ArticlesController do
 
   describe '#show' do
     before do
-      User.stub(:find_by_id).with('1').and_return @user = stub('user').as_null_object
-      Article.stub(:find).with('1').and_return @article = stub('article').as_null_object
+      @user = stub_model(User)
+      Article.stub(:find).with('1').and_return @article = stub_model(Article, user: @user)
       @article.stub_chain(:threaded_comments, :page).with('1').and_return @comments = stub('comments')
-      get :show, user_id: 1, id: 1, page: 1
+      get :show, id: 1, page: 1
     end
 
     it { should assign_to(:user).with @user }
@@ -105,7 +105,7 @@ describe ArticlesController do
     include_context 'authenticated user'
 
     before do
-      @ability.can :create, Article
+      @ability.can :new, Article
       get :new
     end
 
@@ -141,7 +141,7 @@ describe ArticlesController do
         do_request
       end
 
-      it { should redirect_to user_article_path(@current_user, @article) }
+      it { should redirect_to article_path(@article) }
       it { flash[:notice].should == 'The article has been created' }
     end
 
@@ -212,7 +212,7 @@ describe ArticlesController do
         do_request article: 'params'
       end
 
-      it { should redirect_to user_article_path(@current_user, @article) }
+      it { should redirect_to article_path(@article) }
       it { flash[:notice].should == 'The article has been updated' }
     end
 

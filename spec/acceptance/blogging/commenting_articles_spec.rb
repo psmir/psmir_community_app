@@ -13,12 +13,12 @@ feature "Commenting an article", %q{
   end
 
   scenario 'Creating a regular comment' do
-    visit user_article_path(@article.user, @article)
+    visit article_path(@article)
     click_link 'Add comment'
     fill_in 'comment_body', :with => 'Some comment'
     click_button 'Create Comment'
 
-    current_path.should == user_article_path(@article.user, @article)
+    current_path.should == article_path(@article)
     page.should have_content 'The comment has been created'
     page.should have_content 'Some comment'
   end
@@ -26,11 +26,11 @@ feature "Commenting an article", %q{
   scenario 'Replying to some comment' do
     @comment = Comment.build_from(@article, create_user!.id, 'Some comment')
     @comment.save
-    visit user_article_path(@article.user, @article)
+    visit article_path(@article)
     click_link 'Reply'
     fill_in 'comment_body', :with => 'Reply to some comment'
     click_button 'Create Comment'
-    current_path.should == user_article_path(@article.user, @article)
+    current_path.should == article_path(@article)
     page.should have_content 'Reply to some comment'
   end
 
@@ -42,7 +42,7 @@ feature "Commenting an article", %q{
     @second = Comment.build_from(@article, create_user!.id, 'Second')
     @second.save
 
-    visit user_article_path(@article.user, @article)
+    visit article_path(@article)
 
     within("#comment_#{@first.id}") do
       click_link 'Reply'
@@ -59,7 +59,7 @@ feature "Commenting an article", %q{
     @comment = Comment.build_from(@article, create_user!.id, 'Some comment')
     @comment.save
 
-    visit user_article_path(@user, @article)
+    visit article_path(@article)
 
     page.should have_content 'Some comment'
     page.should have_content 'less than a minute ago'

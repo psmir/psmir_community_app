@@ -43,7 +43,7 @@ feature "Viewing articles", %q{
 
     click_link 'Some title'
 
-    current_path.should == user_article_path(@user, article)
+    current_path.should == article_path(article)
   end
 
   scenario 'Searching similar articles by tag' do

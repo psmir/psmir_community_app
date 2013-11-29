@@ -21,13 +21,13 @@ class CommentsController < ApplicationController
       @comment.attach_to_comment_with_id params[:parent] if params[:parent]
     rescue ParentCommentNotFound => e
       flash[:alert] = e.message
-      redirect_to user_article_path(@article.user, @article)
+      redirect_to article_path(@article)
       return
     end
 
     if @comment.save
       flash[:notice] = 'The comment has been created'
-      redirect_to user_article_path(@article.user, @article)
+      redirect_to article_path(@article)
     else
       flash[:alert] = 'The comment has not been created'
       render :action => 'new'

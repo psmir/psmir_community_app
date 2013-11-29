@@ -70,7 +70,7 @@ describe CommentsController do
       end
 
       it 'redirects to the article page' do
-        response.should redirect_to user_article_path(@article.user, @article)
+        response.should redirect_to article_path(@article)
       end
     end
 
@@ -123,7 +123,7 @@ describe CommentsController do
         end
 
         it 'redirects to the article page' do
-          response.should redirect_to user_article_path(@article.user, @article)
+          response.should redirect_to article_path(@article)
         end
 
       end
