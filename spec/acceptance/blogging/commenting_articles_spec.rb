@@ -67,7 +67,7 @@ feature "Commenting an article", %q{
     # avatar
     page.should have_xpath ("//img[@src=\"#{@user.profile.avatar.url(:thumb)}\"]")
     click_link @comment.user.username
-    current_path.should == profile_path(@comment.user.profile)
+    current_path.should == user_profile_path(@comment.user)
 
   end
 end

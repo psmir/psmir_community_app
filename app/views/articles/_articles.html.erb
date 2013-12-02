@@ -14,9 +14,9 @@
         <div class="article_info">
 
           <%= link_to image_tag(article.user.profile.avatar.url(:thumb)),
-             profile_path(article.user.profile), :class => 'avatar' %>
+             user_profile_path(article.user), :class => 'avatar' %>
           <%= link_to "#{article.user.username} (#{article.user.profile.name})",
-            profile_path(article.user.profile), :class => 'name' %>
+            user_profile_path(article.user), :class => 'name' %>
           <span class="publicated"><%= time_ago_in_words(article.created_at) %> ago</span>
           <div class="clear">&nbsp;</div>
         </div>

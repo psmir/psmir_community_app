@@ -1,11 +1,11 @@
 class ProfilesController < ApplicationController
-  before_filter :authenticate_user!, :except => [:show, :avatar]
-  before_filter :find_profile, :only => [:show, :edit, :avatar, :update]
-  before_filter :check_owner, :only => [:edit, :update]
-
+  before_filter :authenticate_user!, except: [:show, :avatar]
+  before_filter :find_user, only: [:show]
+  before_filter :find_profile, only: [:show]
+  before_filter :find_current_user_profile, only: [:edit, :update]
+  helper_method :favorite_bloggers
 
   def show
-    @favorite_bloggers = @profile.user.bloggers.page params[:page]
   end
 
   def edit
@@ -14,36 +14,36 @@ class ProfilesController < ApplicationController
   def update
     if @profile.update_attributes params[:profile]
       flash[:notice] = 'The profile has been updated'
-      redirect_to profile_path(@profile)
+      redirect_to profile_path
     else
       flash[:alert] = 'The profile has not been updated'
       render :action => 'edit'
     end
-
   end
 
   def avatar
+    @profile = Profile.find(params[:id])
     @avatar = @profile.get_avatar_file params[:style]
     send_data(@avatar, :type => @profile.avatar_content_type, :disposition => 'inline')
   end
 
-private
+  private
+
+  def find_user
+    @user = User.find(params[:user_id]) if params[:user_id]
+    @user ||= current_user
+    redirect_to new_user_session_path unless @user
+  end
 
   def find_profile
-    @profile = Profile.find params[:id]
-
-    if @profile.nil?
-      flash[:alert] = 'The profile was not found'
-      redirect_to root_path
-      return
-    end
+    @profile = @user.profile
   end
 
-  def check_owner
-    if @profile.user != current_user
-      flash[:alert] = 'You are not allowed to do so'
-      redirect_to root_path
-    end
+  def find_current_user_profile
+    @profile = current_user.profile
   end
 
+  def favorite_bloggers
+    @favorite_bloggers ||= @user.bloggers.page params[:page]
+  end
 end

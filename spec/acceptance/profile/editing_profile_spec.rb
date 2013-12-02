@@ -10,7 +10,7 @@ feature "Editing a profile", %q{
     @user = create_user!
     log_in(@user)
     FactoryGirl.create(:profile, :user => @user)
-    visit edit_profile_path(@user.profile)
+    visit edit_profile_path
   end
 
   scenario 'Editing a profile' do
@@ -23,7 +23,7 @@ feature "Editing a profile", %q{
       :info      => 'New information',
       :interests => 'fitness, music')
 
-    current_path.should == profile_path(@user.profile)
+    current_path.should == profile_path
     @user.reload
     page.should have_xpath ("//img[@src=\"#{@user.profile.avatar.url(:original)}\"]")
     page.should have_content 'Lisa'

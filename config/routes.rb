@@ -17,9 +17,10 @@ Community::Application.routes.draw do
     end
 
     resources :articles, :only => [:index]
+    resource :profile, :only => [:show]
   end
 
-  resources :profiles, :except => [:index, :new, :create, :destroy]
+  resource :profile, :only => [:show, :edit, :update]
 
   match '/about' => 'pages#about'
   match '/profile/:id/avatar' => 'profiles#avatar', :as => :avatar
