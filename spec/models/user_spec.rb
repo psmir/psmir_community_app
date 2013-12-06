@@ -8,7 +8,7 @@ describe User do
     context "admin" do
       let(:user){ FactoryGirl.create(:user, admin: true) }
 
-      it { should be_able_to(:manage, Article.new) }
+      it { should be_able_to(:manage, :all) }
     end
 
     context "user" do
@@ -16,6 +16,9 @@ describe User do
       it { should be_able_to(:read, Article.new) }
       it { should be_able_to(:manage, FactoryGirl.create(:article, user: user)) }
       it { should_not be_able_to(:manage, Article.new) }
+      it { should be_able_to(:read, FactoryGirl.create(:message, recipient: user)) }
+      it { should be_able_to(:create, FactoryGirl.create(:message, sender: user)) }
+      it { should be_able_to(:destroy, FactoryGirl.create(:message, recipient: user)) }
     end
   end
 

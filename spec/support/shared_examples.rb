@@ -7,6 +7,14 @@
     end
   end
 
+  shared_context 'set up the ability' do
+    before do
+      @ability = Object.new
+      @ability.extend CanCan::Ability
+      @controller.stub(:current_ability).and_return @ability
+    end
+  end
+
 
   shared_examples 'requiring authentication' do
     it 'authenticates the user' do

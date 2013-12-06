@@ -1,11 +1,7 @@
 require 'spec_helper'
 
 describe ArticlesController do
-  before do
-    @ability = Object.new
-    @ability.extend(CanCan::Ability)
-    @controller.stub(:current_ability).and_return(@ability)
-  end
+  include_context 'set up the ability'
 
   describe "#index" do
     let(:user) { stub_model(User) }

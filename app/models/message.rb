@@ -6,6 +6,8 @@ class Message < ActiveRecord::Base
   validates_presence_of :message
   attr_accessible :title, :message, :recipient_username
 
+  scope :by_newest, -> { order('created_at DESC') }
+
   def recipient_username=(value)
     user = User.find_by_username(value)
     self.recipient_id = user.id if user
