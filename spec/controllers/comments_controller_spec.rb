@@ -3,40 +3,22 @@ require 'my_exceptions'
 
 describe CommentsController do
 
+  include_context 'authenticated user'
+
   describe 'GET #new' do
     before do
-      controller.stub :authenticate_user!
       Article.stub(:find).with('1').and_return @article = stub('article')
+      get :new, article_id: 1
     end
 
-    def do_request(args = {})
-      get :new, { article_id: 1 }.merge(args)
-    end
-
-    it_behaves_like 'requiring authentication'
-
-    it 'fetches the article' do
-      do_request
-      assigns[:article].should == @article
-    end
-
-
-    it 'assigns a new Comment instance to the @comment' do
-      Comment.stub(:new).and_return article = stub('article')
-      do_request
-      assigns[:comment].should == article
-    end
-
-    it 'renders the :new template' do
-      do_request
-      response.should render_template :new
-    end
+    it { should assign_to(:resource).with(@article)}
+    it { assigns[:comment].should be_a_new Comment }
+    it { should render_template :new }
   end
 
   describe 'POST #create' do
 
     before do
-      controller.stub :authenticate_user!
       Article.stub(:find).and_return @article = stub_model(Article, user: mock_model(User))
       controller.stub(:current_user).and_return @current_user = stub_model(User)
       @comment = stub('comment').as_null_object
@@ -47,11 +29,9 @@ describe CommentsController do
       post :create, { article_id: 1, comment: { :body => 'some content' } }.merge(args)
     end
 
-    it_behaves_like 'requiring authentication'
-
-    it 'fetches the article' do
+    it 'finds the resource' do
       do_request
-      assigns[:article].should == @article
+      should assign_to(:resource).with(@article)
     end
 
     it 'creates a new comment and assigns it to the @comment' do
@@ -94,9 +74,9 @@ describe CommentsController do
         do_request comment: nil
       end
 
-      it 'redirects to the comment creation page' do
-        response.should redirect_to new_article_comment_path(@article)
-      end
+      it { assigns[:comment].should be_a_new Comment }
+      it { should render_template :new }
+
     end
 
     context 'attaching the comment to its parent one' do

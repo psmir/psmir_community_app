@@ -1,6 +1,6 @@
-<span class="breadcrumb"><%= link_to 'Article >> ', article_path(@article) %>Add comment</span>
+<span class="breadcrumb"><%= link_to "#{@resource.class} >> ", @resource %>Add comment</span>
 <div id="add_comment">
-  <%= form_for [@article, @comment] do |f| %>
+  <%= form_for [@resource, @comment] do |f| %>
     <%= hidden_field_tag :parent, params[:parent] if params[:parent] %>
     <p>
       <%= f.text_area :body %>
