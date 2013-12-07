@@ -24,6 +24,7 @@ group :test, :development do
   gem 'rspec-rails', '~> 2.5'
   gem 'ruby-debug19'
   gem 'forgery'
+  gem 'faker'
 end
 
 group :development do
