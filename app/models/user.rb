@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
 
   scope :newest_incoming_messages, -> { incoming_messages.by_newest }
 
+  delegate :name, :avatar_url, to: :profile, prefix: true
 
   def follow(blogger)
     self.bloggers << blogger

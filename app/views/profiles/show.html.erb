@@ -2,7 +2,7 @@
   <h3><%= @user.username %>'s profile</h3>
 
   <div id="personal_information">
-    <%= image_tag @profile.avatar.url(:original), :id => 'original_avatar' %>
+    <%= image_tag @profile.avatar_url(:original), :id => 'original_avatar' %>
     <dl>
       <dt>Name</dt>
       <dd><%= @profile.name %></dd>
@@ -28,8 +28,8 @@
    <h4>Favorite bloggers</h4>
     <% favorite_bloggers.each do |blogger| %>
       <div class="favorite_blogger">
-        <%= link_to image_tag(blogger.profile.avatar.url(:thumb)), user_profile_path(blogger), :class => 'avatar' %>
-        <%= link_to "#{blogger.username} (#{blogger.profile.name})", user_profile_path(blogger), :class => 'name' %>
+        <%= link_to image_tag(blogger.profile_avatar_url(:thumb)), user_profile_path(blogger), :class => 'avatar' %>
+        <%= link_to "#{blogger.username} (#{blogger.profile_name})", user_profile_path(blogger), :class => 'name' %>
         <div class="clear"></div>
       </div>
     <% end %>

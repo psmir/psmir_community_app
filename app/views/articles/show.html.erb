@@ -15,7 +15,7 @@
     <%= link_to image_tag(@user.profile.avatar.url(:thumb)),
        user_profile_path(@user), :class => 'avatar' %>
 
-    <%= link_to "#{@user.username} (#{@user.profile.name})",
+    <%= link_to "#{@user.username} (#{@user.profile_name})",
       user_profile_path(@user), :class => 'name' %>
 
     <span class="publicated"><%= time_ago_in_words(@article.created_at) %> ago</span>
@@ -39,9 +39,9 @@
   <div class="comments">
     <% @comments.each do |comment| %>
       <div id="comment_<%= comment.id%>" style="margin-left: <%= comment.level * 20%>px;">
-        <%= link_to image_tag(comment.user.profile.avatar.url(:thumb)),
+        <%= link_to image_tag(comment.user_profile_avatar_url(:thumb)),
            user_profile_path(comment.user), :class => 'avatar' %>
-        <%= link_to "#{comment.user.username} (#{comment.user.profile.name})",
+        <%= link_to "#{comment.user_username} (#{comment.user_profile_name})",
           user_profile_path(comment.user), :class => 'name' %>
         <div class="clear">&nbsp;</div>
         <div>

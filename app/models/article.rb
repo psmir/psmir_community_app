@@ -14,7 +14,7 @@ class Article < ActiveRecord::Base
   scope :with_tags, includes(:tags)
   scope :with_users_and_profiles, includes(:user => :profile)
 
-
+  delegate :username, :profile_name, to: :user, prefix: true
 
   def threaded_comments
     self.comment_threads.order('lft')

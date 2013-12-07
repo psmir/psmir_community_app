@@ -23,4 +23,8 @@ class Profile < ActiveRecord::Base
     return avatar_medium_file if style == 'medium'
     return avatar_file if style == 'original'
   end
+
+  def avatar_url(*args)
+    avatar.url(*args)
+  end
 end

@@ -8,12 +8,11 @@ class Message < ActiveRecord::Base
 
   scope :by_newest, -> { order('created_at DESC') }
 
+  delegate :username, to: :sender, prefix: true
+  delegate :username, to: :recipient, prefix: true, allow_nil: true
+
   def recipient_username=(value)
     user = User.find_by_username(value)
     self.recipient_id = user.id if user
-  end
-
-  def recipient_username
-    self.recipient.username if self.recipient
   end
 end
