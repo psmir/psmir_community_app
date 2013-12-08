@@ -1,0 +1,13 @@
+<div id="comment_<%= comment.id%>" style="margin-left: <%= comment.level * 20%>px;">
+  <%= link_to image_tag(comment.user_profile_avatar_url(:thumb)),
+     user_profile_path(comment.user), :class => 'avatar' %>
+  <%= link_to "#{comment.user_username} (#{comment.user_profile_name})",
+    user_profile_path(comment.user), :class => 'name' %>
+  <div class="clear">&nbsp;</div>
+  <div>
+    <p><%= comment.body %></p>
+    <p>Posted: <%= time_ago_in_words(comment.created_at) %> ago</p>
+    <p><%= link_to 'Reply', new_polymorphic_path([commented, Comment], parent: comment.id ),
+      :class => 'reply_to_comment_link' if user_signed_in? %></p>
+  </div>
+</div>
