@@ -1,7 +1,7 @@
 FactoryGirl.define  do
   factory :article do
-    sequence(:title) { |n| "title#{n}" }
-    sequence(:content) { |n| "content#{n}" }
+    title { Faker::Lorem.sentence(10) }
+    content { Faker::Lorem.paragraphs(3).join(" ") }
     association :user
   end
 end

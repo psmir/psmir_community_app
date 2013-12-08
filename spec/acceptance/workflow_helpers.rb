@@ -1,4 +1,4 @@
-module WorkflowHelpers 
+module WorkflowHelpers
   def log_in(user)
     visit new_user_session_path
     fill_in 'Username', :with => user.username
@@ -17,7 +17,7 @@ module WorkflowHelpers
   def snippet(text, wordcount, omission)
     text.split[0..(wordcount-1)].join(" ") + (text.split.size > wordcount ? " " + omission : "")
   end
-  
+
   def submit_article_creation_form(data)
     fill_in 'Title', :with => data[:title]
     fill_in 'Content', :with => data[:content]
@@ -25,21 +25,21 @@ module WorkflowHelpers
     click_button 'Create'
   end
 
-  
+
   def submit_article_edition_form(data)
     fill_in 'Title', :with => data[:title] if data[:title]
     fill_in 'Content', :with => data[:content] if data[:content]
     fill_in 'Tags', :with => data[:tag_list] if data[:tag_list]
     click_button 'Update'
   end
- 
+
   def submit_message_form(data)
     fill_in 'To', :with => data[:recipient]
     fill_in 'Title', :with => data[:title]
     fill_in 'Message', :with => data[:message]
     click_button 'Send'
   end
-  
+
 
   def submit_profile_form(data = {})
     if data[:avatar]
@@ -50,7 +50,7 @@ module WorkflowHelpers
     birthday = data[:birthday]
     select birthday.day.to_s, :from => 'profile_birthday_3i'
     select Date::MONTHNAMES[birthday.month], :from => 'profile_birthday_2i'
-    select birthday.year.to_s, :from => 'profile_birthday_1i' 
+    select birthday.year.to_s, :from => 'profile_birthday_1i'
     fill_in 'About me', :with => data[:info]
     fill_in 'Interests', :with => data[:interests]
     click_button 'Profile'

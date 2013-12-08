@@ -20,9 +20,9 @@ describe Article do
 
   describe '.default_list' do
     before do
-      @user = create_user!
-      @article1 = FactoryGirl.create(:article, :user => @user, :created_at => 1.day.ago)
-      @article2 = FactoryGirl.create(:article, :user => @user, :created_at => 2.days.ago)
+      @user = create(:user)
+      @article1 = create(:article, user: @user, created_at: 1.day.ago)
+      @article2 = create(:article, user: @user, created_at: 2.days.ago)
     end
 
     it 'returns articles ordered from new to old' do
@@ -33,13 +33,13 @@ describe Article do
 
   describe '.in_blogs_selected_by' do
     before do
-      @john = create_user!
-      @bob  = create_user!
-      @tom  = create_user!
+      @john = create(:user)
+      @bob  = create(:user)
+      @tom  = create(:user)
       @john.bloggers << @bob
 
-      @article1 = FactoryGirl.create(:article, :user => @bob)
-      @article2 = FactoryGirl.create(:article, :user => @tom)
+      @article1 = create(:article, user: @bob)
+      @article2 = create(:article, user: @tom)
     end
 
     it 'returns articles from selected blogs only' do

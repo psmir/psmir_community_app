@@ -6,18 +6,19 @@ feature "Creating an article", %q{
 } do
 
   background do
-    @user = create_user!
+    @user = create(:user)
     log_in(@user)
     visit new_article_path
   end
 
   scenario 'Creating an article' do
     submit_article_creation_form(
-      FactoryGirl.attributes_for(
+      attributes_for(
         :article,
-        :title    => 'Some title',
-        :content  => 'Some content',
-        :tag_list => 'some tag')
+        title: 'Some title',
+        content: 'Some content',
+        tag_list: 'some tag'
+      )
     )
 
     article = Article.first
@@ -30,7 +31,12 @@ feature "Creating an article", %q{
 
   scenario 'Creating an article with invalid attributes' do
     submit_article_creation_form(
-      FactoryGirl.attributes_for(:article, :title => '', :content => ''))
+      attributes_for(
+        :article,
+        title: '',
+        content: ''
+      )
+    )
 
     page.should have_content 'The article has not been created'
     page.should have_content "Title can't be blank"

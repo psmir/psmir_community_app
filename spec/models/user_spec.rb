@@ -6,13 +6,13 @@ describe User do
     subject { Ability.new(user) }
 
     context "admin" do
-      let(:user){ FactoryGirl.create(:user, admin: true) }
+      let(:user){ create(:user, :admin) }
 
       it { should be_able_to(:manage, :all) }
     end
 
     context "user" do
-      let(:user){ FactoryGirl.create(:user) }
+      let(:user){ create(:user) }
       it { should be_able_to(:read, Article.new) }
       it { should be_able_to(:manage, FactoryGirl.create(:article, user: user)) }
       it { should_not be_able_to(:manage, Article.new) }
@@ -28,7 +28,7 @@ describe User do
 
   describe 'validation' do
     before do
-      @user = create_user! # for uniqueness checking
+      @user = create(:user) # for uniqueness checking
     end
 
     it { should validate_presence_of :username }
@@ -39,8 +39,8 @@ describe User do
 
   context '#follow/#unfollow' do
     before do
-      @user = create_user!
-      @blogger = create_user!
+      @user = create(:user)
+      @blogger = create(:user)
     end
 
     describe '#follow(blogger)' do

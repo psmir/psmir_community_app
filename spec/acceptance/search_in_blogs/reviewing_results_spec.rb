@@ -6,19 +6,17 @@ feature "Reviewing results", %q{
 } do
 
   background do
-    @user = create_user!
+    @user = create(:user)
   end
 
   scenario 'Reviewing the list of articles' do
-    20.times do |t|
-      FactoryGirl.create(:article, :title => "title#{t}", :user => @user)
-    end
+    20.times { |t| create(:article, title: "title#{t}", user: @user) }
 
     visit root_path
 
     #  I should see the list of articles with 10 items per page,
     # ordered from new to old
-    page.should have_content('title15') # the list is ordered by created_at desc
+    page.should have_content('title15') # the list is ordered by newest
     page.should_not have_content('title5')
 
     click_link '2'
@@ -27,12 +25,12 @@ feature "Reviewing results", %q{
   end
 
   scenario 'Reviewing a teaser' do
-    article = FactoryGirl.create(
-      :article,
-      :title => 'Some title',
-      :content => Forgery::LoremIpsum.text(:sentences, 10, :random => 5),
-      :user => @user,
-      :tag_list => 'some tag')
+    article = create(:article,
+      title: 'Some title',
+      content: Faker::Lorem.paragraphs(3).join(" "),
+      user: @user,
+      tag_list: 'some tag'
+    )
 
     visit root_path
     page.should have_content 'Some title'
@@ -43,8 +41,5 @@ feature "Reviewing results", %q{
     page.should have_content 'some tag'
     click_link 'Some title'
     current_path.should == article_path(article)
-
-    visit root_path
-    click_link @user.profile.name
   end
 end

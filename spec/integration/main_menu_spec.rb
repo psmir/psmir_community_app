@@ -16,7 +16,7 @@ feature 'Main menu items visibility' do
 
   context 'Logged in user' do
     before do
-      @user = create_user!
+      @user = create(:user)
       log_in @user
       visit root_path
     end
@@ -31,7 +31,7 @@ feature 'Main menu items visibility' do
 
   context 'Admin' do
     before do
-      @admin = create_user!(:admin => true)
+      @admin = create(:user, :admin)
       log_in @admin
       visit root_path
     end

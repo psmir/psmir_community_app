@@ -1,6 +1,6 @@
 require 'acceptance/acceptance_helper'
 feature 'Search in blogs page controls visibility spec' do
-  let(:user){ create_user! }
+  let(:user){ create(:user) }
 
   scenario 'unsigned in user should not see "in selected blogs" checkbox' do
     visit root_path
@@ -12,5 +12,5 @@ feature 'Search in blogs page controls visibility spec' do
     visit root_path
     page.should have_css "div[id=\"in_selected_blogs\"]"
   end
-  
+
 end

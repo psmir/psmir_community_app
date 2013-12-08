@@ -7,13 +7,13 @@ feature "Deleting an article", %q{
 } do
 
   background do
-    @user = create_user!
+    @user = create(:user)
     log_in(@user)
-    FactoryGirl.create(
+    create(
       :article,
-      :title   => 'Some title',
-      :content => 'Some content',
-      :user => @user
+      title: 'Some title',
+      content: 'Some content',
+      user: @user
     )
 
     visit user_articles_path(@user)

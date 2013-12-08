@@ -7,33 +7,30 @@ feature "Blog following", %q{
 } do
 
    background do
-    @bob = create_user!
-    log_in(@bob)
-
-    @tom = create_user!
-    @tom.profile.name = 'Tom'
-    @tom.profile.save
+    @user = create(:user)
+    log_in @user
+    @blogger = create(:user)
   end
 
   scenario 'Subscribing to the blog of another user' do
-    visit user_articles_path(@tom)
+    visit user_articles_path(@blogger)
     click_button 'Follow'
-    visit user_profile_path(@bob)
+    visit profile_path
 
     within("#following") do
-      page.should have_content 'Tom'
+      page.should have_content @blogger.profile_name
     end
 
   end
 
   scenario 'Unsubscribing to the blog of another user' do
-    @bob.bloggers << @tom
-    visit user_articles_path(@tom)
+    @user.bloggers << @blogger
+    visit user_articles_path(@blogger)
     click_button 'Unfollow'
-    visit profile_path(@bob.profile)
+    visit profile_path
 
     within("#following") do
-      page.should_not have_content 'Tom'
+      page.should_not have_content @blogger.profile_name
     end
   end
 end

@@ -1,10 +1,9 @@
 FactoryGirl.define do
   factory :profile do
-    name 'Real name'
-    gender 'male'
-    birthday Date.civil(1990, 03, 15)
-    info 'Some information'
-    interest_list 'interest1, interest2'
-    association :user
+    name { Faker::Name.name }
+    gender { ['male', 'female'].sample }
+    birthday { Date.today - (rand(10) + 20).years }
+    info { Faker::Lorem.sentences(3) }
+    interest_list { Faker::Lorem.words(5) }
   end
 end

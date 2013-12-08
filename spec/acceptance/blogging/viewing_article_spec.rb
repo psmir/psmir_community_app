@@ -6,14 +6,13 @@ feature "Viewing an article", %q{
 } do
 
   background do
-    @user = create_user!
-    log_in(@user)
-    @article = FactoryGirl.create(
-      :article,
-      :title => 'Some title',
-      :content => 'Some content',
-      :user => @user)
-
+    @user = create(:user)
+    log_in @user
+    @article = create(:article,
+      title: 'Some title',
+      content: 'Some content',
+      user: @user
+    )
   end
 
   scenario 'Viewing an article' do
@@ -21,8 +20,6 @@ feature "Viewing an article", %q{
     click_link 'Some title'
     current_path.should == article_path(@article)
 
-    page.should have_content 'Some title'
-    page.should have_content 'Some content'
-    page.should have_content 'less than a minute ago'
+    page_should_have [ 'Some title', 'Some content', 'less than a minute ago' ]
   end
 end
